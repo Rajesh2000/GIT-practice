@@ -1,0 +1,224 @@
+#include <iostream>
+#include<string>
+#include<queue>
+#include<stack>
+using namespace std;
+
+class Node{
+    public:
+    int data;
+    Node* right;
+    Node* left;
+    
+    Node(int val){
+        data=val;
+        right=NULL;
+        left=NULL;
+    }
+};
+
+void inOrder(Node* root){
+    if(root==NULL) return ;
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    inOrder(root->right);
+}
+
+int countNodes(Node* root){
+    if(root==NULL) return 0;
+    return (countNodes(root->left)+countNodes(root->right)+1);
+}
+int height(Node* root){
+    if(root==NULL) return 0;
+    return max(height(root->left),height(root->right))+1;
+}
+void sumReplacement(Node* root){
+    if(root==NULL) return;
+    sumReplacement(root->right);
+    sumReplacement(root->left);
+
+    if(root->left){
+        root->data += root->left->data;
+    }
+    if(root->right){
+        root->data += root->right->data;
+    }
+}
+
+////////is Balanced
+bool isBalance(Node* root){
+    if(root==NULL) return true;
+
+    if(!isBalance(root->right)) return false;
+    if(!isBalance(root->left)) return false;
+
+    int lh=height(root->left);
+    int rh=height(root->right);
+    if(abs(lh-rh)<=1) return true;
+    else return false;
+}
+
+void levelOrder(Node* root){
+    if(root==NULL) return ;
+    queue<Node*> q;
+    q.push(root);
+    q.push(root);
+    while(!q.empty()){
+        Node* node=q.front();
+        q.pop();
+        if(node != NULL){
+            cout<<node->data<<" ";
+            if(node->right) q.push(node->right);
+            if(node->left) q.push(node->left);
+        }else if(!q.empty()){
+            q.push(NULL);
+        }
+    }
+
+}
+
+void nodesAtK(Node* root,int level){
+    if(root==NULL) return;
+
+    queue<Node*> q;
+    q.push(root);
+    int count=0;
+    while (!q.empty())
+    {
+        int n=q.size();
+        for(int i=0; i<n; i++){
+            Node* curr=q.front();
+            q.pop();
+            if(count==level){
+                cout<<curr->data<<" ";
+            }
+            if(curr->left != NULL) q.push(curr->left);
+            if(curr->right != NULL) q.push(curr->right);
+        }count++;
+    }
+    
+}
+
+void ZigZag(Node* root){
+    if(root==NULL) return;
+
+    queue<Node*> q;
+    stack<int> st;
+    q.push(root);
+    bool alter=true;
+    while(!q.empty()){
+        int n=q.size();
+        
+        
+        for(int i=0;i<n;i++){
+            Node* curr=q.front();
+            q.pop();
+            if(alter){
+                cout<<curr->data<<" ";
+                alter = false;
+            }else{
+                while(!q.empty()){
+                    int a=q.front()->data;
+                    st.push(a);
+                    q.pop();
+                }
+                while(!st.empty()){
+                    cout<<st.top()<<" ";
+                    st.pop();
+                }
+                alter=true;
+            }
+            if(curr->left != NULL) q.push(curr->left);
+            if(curr->right != NULL) q.push(curr->right);
+            
+    }
+        
+        
+    }
+}
+//////////////////Using two stacks
+void ZigZagTraversal(Node* root){
+    if(root==NULL) return;
+
+    stack<Node*> currlvl;
+    stack<Node*> nextlvl;
+
+    bool leftToRight=true;
+    currlvl.push(root);
+
+    while(!currlvl.empty()){
+        Node* temp=currlvl.top();
+        currlvl.pop();
+
+        if(temp){
+            cout<<temp->data<<" ";
+        
+
+        if(leftToRight){
+            if(temp->left){
+                nextlvl.push(temp->left);
+            }
+            if(temp->right){
+                nextlvl.push(temp->right);
+            }
+        }
+        //Right To Left
+        else
+        {
+            if(temp->right){
+                nextlvl.push(temp->right);
+            }
+            if(temp->left){
+                nextlvl.push(temp->left);
+            }
+        }
+        
+        }
+        if(currlvl.empty()){
+            leftToRight=!leftToRight;
+            swap(currlvl, nextlvl);
+        }
+        
+    }
+
+}
+
+void leftView(Node* root){
+    if(root==NULL) return;
+
+    queue<Node*> q;
+    q.push(root);
+
+    while (!q.empty())
+    {
+        int n=q.size();
+        for(int i=0; i<n; i++){
+            Node* curr=q.front();
+            q.pop();
+            if(i==n-1){
+                cout<<curr->data<<" ";
+            }
+            if(curr->left != NULL) q.push(curr->left);
+            if(curr->right != NULL) q.push(curr->right);
+        }
+    }
+    
+}
+
+int main(){
+    
+    struct Node* root= new Node(1);
+    root->left=new Node(2);
+    root->right=new Node(3);
+    root->left->left=new Node(4);
+    root->left->right= new Node(5);
+    root->right->right=new Node(7);
+    root->right->left=new Node(6);
+    ZigZagTraversal(root);
+    cout<<"\n";
+    // cout<<countNodes(root)<<"\n";
+    // cout<<isBalance(root)<<"\n";
+    // levelOrder(root);
+    return 0;
+}
+
