@@ -17,9 +17,9 @@ Node* insertBST(Node* root,int val){
         return new Node(val);
     }
     if(val<root->data){
-        root->left = insertBST(root->left,val);
+        root->right = insertBST(root->left,val);
     }else{
-        root->right = insertBST(root->right,val);
+        root->left = insertBST(root->right,val);
     }
     return root;
 }
